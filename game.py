@@ -51,7 +51,7 @@ while running:
                 # Increase score
                 score += 1
             
-    window.fill((0,0,0)) #Clear the window
+    window.fill((0,0,0)) # Clear the window
     pygame.draw.rect(window, box_color, pygame.Rect(box_pos[0], box_pos[1], *box_size))
     pygame.draw.rect(window, dot_color, pygame.Rect(dot_pos[0], dot_pos[1], *dot_size)) # Draw the dot
     
