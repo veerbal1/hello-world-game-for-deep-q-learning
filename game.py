@@ -47,19 +47,19 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             done = True
-        else:
-            if action == 0: # Move left
+            
+    if action == 0: # Move left
                 box_pos[0] = max(0, box_pos[0] - 10)  # Move left, don't go outside the window
-            elif action == 1: # Move right
+    elif action == 1: # Move right
                 box_pos[0] = min(window_size[0] - box_size[0], box_pos[0] + 10)  # Move right
-            elif action == 2: # Move up
+    elif action == 2: # Move up
                 box_pos[1] = max(0, box_pos[1] - 10)  # Move up
-            elif action == 3: # Move down
+    elif action == 3: # Move down
                 box_pos[1] = min(window_size[1] - box_size[1], box_pos[1] + 10)  # Move down
                 
                 
              # Check if the box and dot overlap
-            if pygame.Rect(box_pos[0], box_pos[1], *box_size).colliderect(pygame.Rect(dot_pos[0], dot_pos[1], *dot_size)):
+    if pygame.Rect(box_pos[0], box_pos[1], *box_size).colliderect(pygame.Rect(dot_pos[0], dot_pos[1], *dot_size)):
                 # Reposition the dot
                 dot_pos = [random.randint(0, window_size[0] - dot_size[0]), random.randint(0, window_size[1]-dot_size[1])]
                 
