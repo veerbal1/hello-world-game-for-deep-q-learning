@@ -34,6 +34,9 @@ state_size = 4 # [box_x, box_y, dot_x, dot_y]
 action_size = 4 # [move_left, move_right, move_up, move_down]
 agent = DQNAgent(state_size, action_size)
 
+# Calculate the initial distance between the box and the dot
+prev_distance = np.sqrt((box_pos[0] - dot_pos[0])**2 + (box_pos[1] - dot_pos[1])**2)
+
 # Main game loop
 running = True
 while running:
@@ -56,16 +59,26 @@ while running:
                 box_pos[1] = max(0, box_pos[1] - 10)  # Move up
     elif action == 3: # Move down
                 box_pos[1] = min(window_size[1] - box_size[1], box_pos[1] + 10)  # Move down
-                
-                
-             # Check if the box and dot overlap
+    
+    # Calculate the new distance between the box and the dot
+    new_distance = np.sqrt((box_pos[0] - dot_pos[0])**2 + (box_pos[1] - dot_pos[1])**2)
+    
+    # Check if the box and dot overlap
     if pygame.Rect(box_pos[0], box_pos[1], *box_size).colliderect(pygame.Rect(dot_pos[0], dot_pos[1], *dot_size)):
-                # Reposition the dot
-                dot_pos = [random.randint(0, window_size[0] - dot_size[0]), random.randint(0, window_size[1]-dot_size[1])]
-                
-                # Increase score
-                score += 1
-                reward = 1
+        # Reposition the dot
+        dot_pos = [random.randint(0, window_size[0] - dot_size[0]), random.randint(0, window_size[1]-dot_size[1])]
+        # Increase score
+        score += 1
+        reward = 10
+    elif new_distance < prev_distance:
+        # The box moved closer to the dot, give a small positive reward
+        reward = 1
+    else:
+        # The box moved away from the dot, give a small negative reward
+        reward = -1
+    
+    # Update the previous distance
+    prev_distance = new_distance
     
     next_state = np.array(box_pos + dot_pos) # Convert to numpy array
     agent.remember(state, action, reward, next_state, done) # Store the experience in memory
@@ -80,6 +93,10 @@ while running:
     # Draw the score
     score_text = font.render("Score: " + str(score), True, (255, 255, 255))
     window.blit(score_text, (10, 10))
+    
+    # Draw distance
+    distance_text = font.render("Distance: " + str(int(new_distance)), True, (255, 255, 255))
+    window.blit(distance_text, (10, 50))
     
      # Update the window
     pygame.display.flip()
